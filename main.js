@@ -5,16 +5,14 @@
 // from the json file. 
 //for now, simply console.log the data. 
 
-let searchBar = document.getElementById("search-bar")
-
-let regex
-const logs = ()=>{
-    console.log(searchBar.value)
-}
+const searchBar = document.getElementById("search-bar")
+const dropdown= document.querySelector(".dropdown-results")
+const results = document.querySelectorAll(".result")
 
 
-let matches
-const al = new RegExp(`al`, 'i')
+
+let matches =[]
+
 const getMatches = async(searchText) =>{
     const regex = new RegExp(`^${searchText}`, 'i')
     const response = await fetch('/data/states.json');
@@ -22,15 +20,44 @@ const getMatches = async(searchText) =>{
    
     //data.forEach(item=>{console.log(item)})
     console.log("_________________________")
-    matches = data
-    matches =matches.filter(state=>{
-        return state.abbr.match(regex) || state.name.match(regex)
+    return matches = data.filter(state=>{
+        return state.abbr.match(regex) || state.name.match(regex)||state.capital.match(regex)
     })
-    matches.forEach(state=>{console.log(state.name)})
-   
 
 }
 
 
+function newDropdown(string, i){
+    const newdiv = document.createElement("div")
+    newdiv.className ="result"
+    newdiv.textContent = string
+    newdiv.id = i
+    dropdown.appendChild(newdiv)
 
-searchBar.addEventListener("input", ()=>getMatches(searchBar.value))
+}
+
+
+searchBar.addEventListener("input", async ()=>{
+    //removing any previous dropdown results
+    while(dropdown.firstChild){
+        dropdown.removeChild(dropdown.firstChild)
+    };
+    await getMatches(searchBar.value);
+    if (matches.length==0||!searchBar.value) dropdown.style.display = "none";
+    else{
+        dropdown.style.display = "block"
+        const regex = new RegExp(`^${searchBar.value}`, 'i')
+        for(let i=0; i<matches.length; i++){
+            const state = matches[i]
+            if(state.capital.match(regex)) {return newDropdown(state.capital, i)}
+            else{newDropdown(state.name, i)}
+
+        }
+
+
+        /* matches.forEach(state=>{
+            return(state.capital.match(regex))? newDropdown(state.capital) 
+            : newDropdown(state.name)
+        }) */
+        }
+    })

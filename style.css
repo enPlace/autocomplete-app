@@ -1,6 +1,10 @@
 
+    html {
+        overflow-y: scroll;
+      }
+
 .input-container{
-   width: 60%;
+   width: 60vw;
    margin: 100px auto;
    border: 1px solid #333;
    border-radius: 5px;
@@ -13,7 +17,7 @@
   #search-bar{
     padding: 10px;
     font-size: 30px;
-    width:97%;
+    width:100vw;
     color: #333;
     border: none;
     outline: none;
@@ -25,15 +29,21 @@
   .dropdown-results{
       border-top: 1px solid black;
       display:none;
+     
       
 
       
   }
   .result{
-      margin:15px;
+      padding-top:15px;
+      padding-bottom:15px;
+      padding-left: 10px;
       font-size: 20px;
       font-family: sans-serif;
-      color: #333;
+      color: #333;      
     
+  }
+  .result:hover{
+      background-color: lightblue
       
   }
