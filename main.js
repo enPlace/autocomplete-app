@@ -5,7 +5,7 @@
 // from the json file. 
 //for now, simply console.log the data. 
 
-let searchBar = document.getElementById("search")
+let searchBar = document.getElementById("search-bar")
 
 let regex
 const logs = ()=>{
@@ -17,7 +17,7 @@ let matches
 const al = new RegExp(`al`, 'i')
 const getMatches = async(searchText) =>{
     const regex = new RegExp(`^${searchText}`, 'i')
-    const response = await fetch('../data/states.json');
+    const response = await fetch('/data/states.json');
     const data = await response.json()
    
     //data.forEach(item=>{console.log(item)})

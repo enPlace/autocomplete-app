@@ -1,0 +1,39 @@
+
+.input-container{
+   width: 60%;
+   margin: 100px auto;
+   border: 1px solid #333;
+   border-radius: 5px;
+   overflow: hidden;
+   
+   
+   
+  }
+
+  #search-bar{
+    padding: 10px;
+    font-size: 30px;
+    width:97%;
+    color: #333;
+    border: none;
+    outline: none;
+    
+    
+    
+    
+  }
+  .dropdown-results{
+      border-top: 1px solid black;
+      display:none;
+      
+
+      
+  }
+  .result{
+      margin:15px;
+      font-size: 20px;
+      font-family: sans-serif;
+      color: #333;
+    
+      
+  }
