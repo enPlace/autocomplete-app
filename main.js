@@ -13,10 +13,11 @@ const stateInfo = document.querySelector(".state-info")
 
 let matches =[] //autocomplete matches
 let activeItem = false //active list item in autocomplete field.
+let searchText = "" //for keeping track of user input
 
 
-const getMatches = async(searchText) =>{
-    const regex = new RegExp(`^${searchText}`, 'i')
+const getMatches = async(string) =>{
+    const regex = new RegExp(`^${string}`, 'i')
     const response = await fetch('/data/states.json');
     const data = await response.json()
    
@@ -54,10 +55,10 @@ function removeChildren(parent){
     };
 }
 
-searchBar.addEventListener("input", async ()=>{
-    
+let lastLetter
+searchBar.addEventListener("keydown", async e=>{
     removeChildren(dropdown) //removing any previous dropdown results
-
+console.log(e.keyCode)
     await getMatches(searchBar.value);
     if (matches.length==0||!searchBar.value) dropdown.style.display = "none";
     else{
@@ -69,7 +70,7 @@ searchBar.addEventListener("input", async ()=>{
             if(state.name.match(regex) || state.abbr.match(regex))  newDropdown(state.name, i)
         }
         }
-    results = document.querySelectorAll(".result")
+        results = document.querySelectorAll(".result")
     })
 
     dropdown.addEventListener("click", e=>{
