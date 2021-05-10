@@ -81,6 +81,7 @@ searchBar.addEventListener("input", async e=>{
     //them to the autocomplete dropdown
     removeChildren(dropdown) 
     stateInfo.style.display="none" //removing previous search results
+    activeItem = false
     console.log(e.keyCode)
     await getMatches(searchBar.value);
     if (matches.length==0||!searchBar.value) dropdown.style.display = "none"; 
@@ -101,8 +102,14 @@ searchForm.addEventListener("submit", e=>{
     //word does not need to be typed. 
     e.preventDefault();
     if(searchBar.value && results.length){
-        const state = matches[results[0].dataset.target]
-        submitState(state)
+        if(activeItem){
+            const state = matches[activeItem.dataset.target]
+            submitState(state)
+        }
+        else{
+            const state = matches[results[0].dataset.target]
+            submitState(state)
+        }
     }
     else{
         noMatches()
@@ -114,13 +121,18 @@ dropdown.addEventListener("click", e=>{
         const state = matches[e.target.dataset.target]
         submitState(state)
 })
+dropdown.addEventListener("mouseover", e=>{
+    console.log("working")
+    cursorActivator(e)})
+
 document.addEventListener("keydown", e=>{
     if(e.key == "ArrowDown"){
         downActivator()
         console.log(activeItem)
 
     }if(e.key=="ArrowUp"){
-        console.log("upper")
+        upActivator()
+        console.log(activeItem)
     }
 
 })
@@ -131,11 +143,17 @@ document.addEventListener("keydown", e=>{
 
 
 
-
+function cursorActivator(e){
+    results.forEach(result=>{
+        result.dataset.status = ""
+    })
+    e.target.dataset.status = "active"
+    activeItem = e.target
+}
 
 
 function downActivator(){
-        //activates next list item in autocomplete field
+        //activates next list item in autocomplete field, css will turn it blue
         if(!activeItem&&results.length!=0){
             results[0].dataset.status = "active"
             activeItem = results[0]
@@ -153,3 +171,24 @@ function downActivator(){
         }
 
     }
+
+    function upActivator(){
+        if(!activeItem&&results.length!=0){
+            results[results.length-1].dataset.status = "active"
+            activeItem = results[results.length-1]
+        }
+        else if(activeItem && activeItem!= results[0]){
+            let previous = results[parseInt(activeItem.dataset.target) -1]
+            activeItem.dataset.status = ""
+            previous.dataset.status = "active"
+            activeItem = previous
+
+        }
+        else if(activeItem && activeItem== results[0]){
+            activeItem.dataset.status =""
+            activeItem = false
+        }
+
+    }
+        
+    

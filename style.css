@@ -45,10 +45,10 @@
   .result[data-status= "active"]{
     background-color: lightblue
   }
-  .result:hover{
+/*   .result:hover{
       background-color: lightblue
       
-  }
+  } */
 
   .state-info{
     width: 40vw;
