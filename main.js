@@ -82,7 +82,6 @@ searchBar.addEventListener("input", async e=>{
     removeChildren(dropdown) 
     stateInfo.style.display="none" //removing previous search results
     activeItem = false
-    console.log(e.keyCode)
     await getMatches(searchBar.value);
     if (matches.length==0||!searchBar.value) dropdown.style.display = "none"; 
     else{
@@ -95,6 +94,9 @@ searchBar.addEventListener("input", async e=>{
         }
         }
         results = document.querySelectorAll(".result") //updates results nodelist
+        for(let i =0; i<results.length; i++){ //gives us an index number to work with in making item active
+            results[i].dataset.index = i
+        }
     })
 
 searchForm.addEventListener("submit", e=>{
@@ -132,11 +134,11 @@ dropdown.addEventListener("mouseout", ()=>{
 document.addEventListener("keydown", e=>{
     if(e.key == "ArrowDown"){
         downActivator()
-        console.log(activeItem)
+        
 
     }if(e.key=="ArrowUp"){
         upActivator()
-        console.log(activeItem)
+       
     }
 
 })
@@ -165,7 +167,7 @@ function downActivator(){
             activeItem = results[0]
         }
         else if(activeItem && activeItem!= results[results.length-1]){
-            let next = results[parseInt(activeItem.dataset.target) +1]
+            let next = results[parseInt(activeItem.dataset.index) +1]
             activeItem.dataset.status = ""
             next.dataset.status = "active"
             activeItem = next
@@ -186,7 +188,7 @@ function downActivator(){
             activeItem = results[results.length-1]
         }
         else if(activeItem && activeItem!= results[0]){
-            let previous = results[parseInt(activeItem.dataset.target) -1]
+            let previous = results[parseInt(activeItem.dataset.index) -1]
             activeItem.dataset.status = ""
             previous.dataset.status = "active"
             activeItem = previous
@@ -198,5 +200,5 @@ function downActivator(){
         }
 
     }
-        
+
     
