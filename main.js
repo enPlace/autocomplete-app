@@ -98,8 +98,8 @@ searchBar.addEventListener("input", async e=>{
     })
 
 searchForm.addEventListener("submit", e=>{
-    //returns a match if there is one. The full
-    //word does not need to be typed. 
+    //Checks to see if an item is active and returns that state.
+    //Otherwise, it returns either the first alphabetical result or inserts no matches message.
     e.preventDefault();
     if(searchBar.value && results.length){
         if(activeItem){
@@ -122,8 +122,12 @@ dropdown.addEventListener("click", e=>{
         submitState(state)
 })
 dropdown.addEventListener("mouseover", e=>{
-    console.log("working")
     cursorActivator(e)})
+
+dropdown.addEventListener("mouseout", ()=>{
+    results.forEach(result=>result.dataset.status = "")
+    activeItem = false
+})
 
 document.addEventListener("keydown", e=>{
     if(e.key == "ArrowDown"){
@@ -141,9 +145,10 @@ document.addEventListener("keydown", e=>{
 
 
 
-
+/*____Activator functions for scrolling through autocomplete results____*/
 
 function cursorActivator(e){
+    //sets "active" the moused-over element, css will turn it blue
     results.forEach(result=>{
         result.dataset.status = ""
     })
@@ -153,7 +158,8 @@ function cursorActivator(e){
 
 
 function downActivator(){
-        //activates next list item in autocomplete field, css will turn it blue
+        //sets "active" next list item in autocomplete field, css will turn it blue
+        //to be used with DownArrow key
         if(!activeItem&&results.length!=0){
             results[0].dataset.status = "active"
             activeItem = results[0]
@@ -173,6 +179,8 @@ function downActivator(){
     }
 
     function upActivator(){
+        //sets "active" the previous list item in autocomplet field, css will turn it blue
+        //to be used with UpArrow key
         if(!activeItem&&results.length!=0){
             results[results.length-1].dataset.status = "active"
             activeItem = results[results.length-1]
