@@ -14,7 +14,7 @@ let searchText = "" //for keeping track of user input
 const getMatches = async(string) =>{
     //checks a string for matches in the states.json file and adds them to an array
     const regex = new RegExp(`^${string}`, 'i')
-    const response = await fetch('/data/states.json');
+    const response = await fetch('data/states.json');
     const data = await response.json()
     return matches = data.filter(state=>{
         return state.abbr.match(regex) || state.name.match(regex)||state.capital.match(regex)
