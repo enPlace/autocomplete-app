@@ -1,34 +1,36 @@
-//I want to take the search input, and each time there is a
-//new input, run a function that searches for a match in the JSON file. 
-
-//I'll use a regular expression for the search and async/awat/fetch to get the data
-// from the json file. 
-//for now, simply console.log the data. 
-
 const searchBar = document.getElementById("search-bar")
 const dropdown= document.querySelector(".dropdown-results")
 let results = document.querySelectorAll(".result")
 const stateInfo = document.querySelector(".state-info")
+const searchForm = document.getElementById("search-form")
+const inputContainer = document.getElementById("input-container")
 
 
-let matches =[] //autocomplete matches
-let activeItem = false //active list item in autocomplete field.
+let matches =[] //holds matches from the json file
+let activeItem = false //for holding active list item in autocomplete field.
 let searchText = "" //for keeping track of user input
 
 
 const getMatches = async(string) =>{
+    //checks a string for matches in the states.json file and adds them to an array
     const regex = new RegExp(`^${string}`, 'i')
     const response = await fetch('/data/states.json');
     const data = await response.json()
-   
-    //data.forEach(item=>{console.log(item)})
     return matches = data.filter(state=>{
         return state.abbr.match(regex) || state.name.match(regex)||state.capital.match(regex)
     })
 }
 
+/*______________Dom manipulation functions____________________ */
+function removeChildren(parent){
+    //removes all children of an element
+    while(parent.firstChild){
+        parent.removeChild(parent.firstChild)
+    };
+}
 
 function newDropdown(string, i){
+    //inserts a new item in the autocomplete dropdown
     const newdiv = document.createElement("div")
     newdiv.className ="result"
     newdiv.textContent = string
@@ -37,6 +39,7 @@ function newDropdown(string, i){
 }
 
 function infoConstructor(name, capital, abbreviation){
+    //formats state information and inserts it into the DOM
     const newh3=document.createElement("h3")
     const nameDiv =document.createElement("div")
     const capitalDiv =document.createElement("div")
@@ -48,19 +51,39 @@ function infoConstructor(name, capital, abbreviation){
     const elements = [newh3, nameDiv, capitalDiv, abbrDiv]
     elements.forEach(element=>stateInfo.appendChild(element))
 }
-
-function removeChildren(parent){
-    while(parent.firstChild){
-        parent.removeChild(parent.firstChild)
-    };
+function submitState(state){
+    //formats page with the search result and clears the searchBar
+    //and autocomplete fields. Takes a "state" object from the json 
+    //file as an argument.
+    removeChildren(stateInfo)
+    stateInfo.style.display="block"
+    infoConstructor(state.name, state.capital, state.abbr)
+    searchBar.value = ""
+    dropdown.style.display = "none"
+    removeChildren(dropdown)
 }
 
-let lastLetter
-searchBar.addEventListener("keydown", async e=>{
-    removeChildren(dropdown) //removing any previous dropdown results
-console.log(e.keyCode)
+function noMatches(){
+    //inserts a message into the DOM if no matches are found
+    removeChildren(stateInfo)
+    stateInfo.style.display="block"
+    const newh3 = document.createElement("h3")
+    newh3.textContent = "No state or capital matches found."
+    stateInfo.appendChild(newh3)
+}
+
+
+
+
+/*_______________Event Handlers_______________ */
+searchBar.addEventListener("input", async e=>{
+    //gets matches for the searchBar.value and adds 
+    //them to the autocomplete dropdown
+    removeChildren(dropdown) 
+    stateInfo.style.display="none" //removing previous search results
+    console.log(e.keyCode)
     await getMatches(searchBar.value);
-    if (matches.length==0||!searchBar.value) dropdown.style.display = "none";
+    if (matches.length==0||!searchBar.value) dropdown.style.display = "none"; 
     else{
         dropdown.style.display = "block"
         const regex = new RegExp(`^${searchBar.value}`, 'i')
@@ -70,20 +93,41 @@ console.log(e.keyCode)
             if(state.name.match(regex) || state.abbr.match(regex))  newDropdown(state.name, i)
         }
         }
-        results = document.querySelectorAll(".result")
+        results = document.querySelectorAll(".result") //updates results nodelist
     })
 
-    dropdown.addEventListener("click", e=>{
-        removeChildren(stateInfo)
-        stateInfo.style.display="block"
-       const state = matches[e.target.dataset.target]
-       infoConstructor(state.name, state.capital, state.abbr)
-       searchBar.value = ""
-       dropdown.style.display = "none"
-       removeChildren(dropdown)
-    })
+searchForm.addEventListener("submit", e=>{
+    //returns a match if there is one. The full
+    //word does not need to be typed. 
+    e.preventDefault();
+    if(searchBar.value && results.length){
+        const state = matches[results[0].dataset.target]
+        submitState(state)
+    }
+    else{
+        noMatches()
+    }
+})
 
-    function downActivator(){
+dropdown.addEventListener("click", e=>{
+    //selects a state if it is clicked on from the dropdown autocomplete field.
+        const state = matches[e.target.dataset.target]
+        submitState(state)
+})
+document.addEventListener("keydown", e=>{
+    console.log(e.key)
+})
+
+
+
+
+
+
+
+
+
+
+function downActivator(){
         //activates next list item in autocomplete field
         if(!activeItem&&results.length!=0){
             results[0].dataset.status = "active"
