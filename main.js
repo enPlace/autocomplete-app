@@ -7,10 +7,13 @@
 
 const searchBar = document.getElementById("search-bar")
 const dropdown= document.querySelector(".dropdown-results")
-const results = document.querySelectorAll(".result")
+let results = document.querySelectorAll(".result")
 const stateInfo = document.querySelector(".state-info")
 
-let matches =[]
+
+let matches =[] //autocomplete matches
+let activeItem = false //active list item in autocomplete field.
+
 
 const getMatches = async(searchText) =>{
     const regex = new RegExp(`^${searchText}`, 'i')
@@ -21,7 +24,6 @@ const getMatches = async(searchText) =>{
     return matches = data.filter(state=>{
         return state.abbr.match(regex) || state.name.match(regex)||state.capital.match(regex)
     })
-
 }
 
 
@@ -31,7 +33,6 @@ function newDropdown(string, i){
     newdiv.textContent = string
     newdiv.setAttribute("data-target", i)
     dropdown.appendChild(newdiv)
-
 }
 
 function infoConstructor(name, capital, abbreviation){
@@ -44,22 +45,19 @@ function infoConstructor(name, capital, abbreviation){
     capitalDiv.textContent=`Capital: ${capital}`
     abbrDiv.textContent=`Abbreviation: ${abbreviation}`
     const elements = [newh3, nameDiv, capitalDiv, abbrDiv]
-
     elements.forEach(element=>stateInfo.appendChild(element))
-
 }
 
 function removeChildren(parent){
     while(parent.firstChild){
         parent.removeChild(parent.firstChild)
     };
-
 }
 
 searchBar.addEventListener("input", async ()=>{
-    //removing any previous dropdown results
-    removeChildren(dropdown)
     
+    removeChildren(dropdown) //removing any previous dropdown results
+
     await getMatches(searchBar.value);
     if (matches.length==0||!searchBar.value) dropdown.style.display = "none";
     else{
@@ -67,11 +65,11 @@ searchBar.addEventListener("input", async ()=>{
         const regex = new RegExp(`^${searchBar.value}`, 'i')
         for(let i=0; i<matches.length; i++){
             const state = matches[i]
-            if(state.capital.match(regex)) {newDropdown(state.capital, i)}
-            if(state.name.match(regex) || state.abbr.match(regex)){newDropdown(state.name, i)}
-
+            if(state.capital.match(regex))    newDropdown(state.capital, i)
+            if(state.name.match(regex) || state.abbr.match(regex))  newDropdown(state.name, i)
         }
         }
+    results = document.querySelectorAll(".result")
     })
 
     dropdown.addEventListener("click", e=>{
@@ -82,6 +80,24 @@ searchBar.addEventListener("input", async ()=>{
        searchBar.value = ""
        dropdown.style.display = "none"
        removeChildren(dropdown)
-
-
     })
+
+    function downActivator(){
+        //activates next list item in autocomplete field
+        if(!activeItem&&results.length!=0){
+            results[0].dataset.status = "active"
+            activeItem = results[0]
+        }
+        else if(activeItem && activeItem!= results[results.length-1]){
+            let next = results[parseInt(activeItem.dataset.target) +1]
+            activeItem.dataset.status = ""
+            next.dataset.status = "active"
+            activeItem = next
+
+        }
+        else if(activeItem && activeItem== results[results.length-1]){
+            activeItem.dataset.status =""
+            activeItem = false
+        }
+
+    }
