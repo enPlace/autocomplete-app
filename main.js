@@ -115,7 +115,14 @@ dropdown.addEventListener("click", e=>{
         submitState(state)
 })
 document.addEventListener("keydown", e=>{
-    console.log(e.key)
+    if(e.key == "ArrowDown"){
+        downActivator()
+        console.log(activeItem)
+
+    }if(e.key=="ArrowUp"){
+        console.log("upper")
+    }
+
 })
 
 

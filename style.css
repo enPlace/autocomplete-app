@@ -42,6 +42,9 @@
       color: #333;      
     
   }
+  .result[data-status= "active"]{
+    background-color: lightblue
+  }
   .result:hover{
       background-color: lightblue
       
