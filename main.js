@@ -7,8 +7,8 @@ const inputContainer = document.getElementById("input-container")
 
 
 let matches =[] //holds matches from the json file
-let activeItem = false //for holding active list item in autocomplete field.
-let searchText = "" //for keeping track of user input
+let activeItem = false //for holding active list item in dropdown field.
+
 
 
 const getMatches = async(string) =>{
@@ -51,6 +51,7 @@ function infoConstructor(name, capital, abbreviation){
     const elements = [newh3, nameDiv, capitalDiv, abbrDiv]
     elements.forEach(element=>stateInfo.appendChild(element))
 }
+
 function submitState(state){
     //formats page with the search result and clears the searchBar
     //and autocomplete fields. Takes a "state" object from the json 
@@ -76,12 +77,13 @@ function noMatches(){
 
 
 /*_______________Event Handlers_______________ */
-searchBar.addEventListener("input", async e=>{
+searchBar.addEventListener("input", async ()=>{
     //gets matches for the searchBar.value and adds 
     //them to the autocomplete dropdown
     removeChildren(dropdown) 
     stateInfo.style.display="none" //removing previous search results
     activeItem = false
+
     await getMatches(searchBar.value);
     if (matches.length==0||!searchBar.value) dropdown.style.display = "none"; 
     else{
@@ -89,9 +91,9 @@ searchBar.addEventListener("input", async e=>{
         const regex = new RegExp(`^${searchBar.value}`, 'i')
         for(let i=0; i<matches.length; i++){
             const state = matches[i]
-            if(state.capital.match(regex))    newDropdown(state.capital, i)
-            if(state.name.match(regex) || state.abbr.match(regex))  newDropdown(state.name, i)
-        }
+            if(state.capital.match(regex)) {newDropdown(state.capital, i)}
+            if(state.name.match(regex) || state.abbr.match(regex))  {newDropdown(state.name, i)}
+        } 
         }
         results = document.querySelectorAll(".result") //updates results nodelist
         for(let i =0; i<results.length; i++){ //gives us an index number to work with in making item active
@@ -99,6 +101,7 @@ searchBar.addEventListener("input", async e=>{
         }
     })
 
+    
 searchForm.addEventListener("submit", e=>{
     //Checks to see if an item is active and returns that state.
     //Otherwise, it returns either the first alphabetical result or inserts no matches message.
@@ -122,6 +125,7 @@ dropdown.addEventListener("click", e=>{
     //selects a state if it is clicked on from the dropdown autocomplete field.
         const state = matches[e.target.dataset.target]
         submitState(state)
+        console.log(e.target)
 })
 dropdown.addEventListener("mouseover", e=>{
     cursorActivator(e)})

@@ -1,0 +1,37 @@
+On active: the text of the input field is equal to the active list item 
+the color of the active list item is light blue
+if none active, the text of the input field is what the user entered originally
+
+key rules: 
+__Key Down__
+if none active, first list item is active
+
+if one is active, that item is inactive and the next item is active
+
+if last is active, none active
+
+__Key Up__
+none active, last is active 
+
+if one is active that item is inactive and the previous item is active
+
+if first is active, none active 
+
+
+
+How to: 
+check for active list items: 
+    I could loop through all of the list items, or I could just set a variable to the list item, or to its 
+        data target. I alraedy have a data-target number for each list, and I could use that to select the item and 
+        whatever item I want next. If there is nothing in the variable, I know that none are active 
+
+
+
+done for down direction, now I need to set the search value to the active item without losing the original text. 
+
+I also have to think about typing more
+
+so make a variable equal to "". lets say searchValue = ""
+
+on input, searchBar.value = searchValue + input
+then searchBar.value = input
